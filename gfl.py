@@ -7,27 +7,9 @@ from copy import copy, deepcopy
 max_yards_to_score = 80
 max_yards_to_down = 10
 
-y_1 = (max_yards_to_score * .03125) 
-y_2 = (max_yards_to_score * .05) 
-
-x_1 = (max_yards_to_down * .24)
-x_2 = (max_yards_to_down * .4)
-
 # Set global bounds
-bounds = [y_1, y_2, x_1, x_2]
-
-visits = {}
-visits['x_0, y_0'] = 0
-visits['x_0, y_1'] = 0
-visits['x_0, y_2'] = 0
-visits['x_1, y_0'] = 0
-visits['x_1, y_1'] = 0
-visits['x_1, y_2'] = 0
-visits['x_2, y_0'] = 0
-visits['x_2, y_1'] = 0
-visits['x_2, y_2'] = 0
-bad = 0
-
+y_1, y_2, y_3, y_4, x_1, x_2, x_3, x_4 = 0, 0, 0, 0, 0, 0, 0, 0
+bounds = [y_1, y_2, y_3, y_4, x_1, x_2, x_3, x_4]
 policy_gene = []
 grid_size = 0
 playbook_size = 0
@@ -41,18 +23,48 @@ def ga_learn(model: nfl.NFLStrategy, time_limit, fitness_sims):
     """
     
     # Global variables
-    global visits
-    global bad
+
     global grid_size
     global policy_gene
     global playbook_size
+    global y_1, y_2, y_3, y_4, x_1, x_2, x_3, x_4
 
     # Hyperparameters
     probability_crossover = 0.5
     probability_mutation = 0.7
-    population_size = 200
-    grid_size = 3
+    population_size = 100 
+    grid_size = 5
     playbook_size = model.offensive_playbook_size()
+
+    # q learning does .48
+    if grid_size == 3:
+        y_1 = (max_yards_to_score * .03125) 
+        y_2 = (max_yards_to_score * .05) 
+
+        x_1 = (max_yards_to_down * .24)
+        x_2 = (max_yards_to_down * .4)
+    
+    # Q learning does .46
+    elif grid_size == 4:
+        y_1 = (max_yards_to_score * .03125) 
+        y_2 = (max_yards_to_score * .037) 
+        y_3 = (max_yards_to_score * .045) 
+
+        x_1 = (max_yards_to_down * .22)
+        x_2 = (max_yards_to_down * .3)
+        x_3 = (max_yards_to_down * .4)
+
+    # Q learning does .46
+    elif grid_size == 5:
+        y_1 = (max_yards_to_score * .03) 
+        y_2 = (max_yards_to_score * .0325) 
+        y_3 = (max_yards_to_score * .037) 
+        y_4 = (max_yards_to_score * .045) 
+
+        x_1 = (max_yards_to_down * .23)
+        x_2 = (max_yards_to_down * .25)
+        x_3 = (max_yards_to_down * .3)
+        x_4 = (max_yards_to_down * .4)
 
     # Bookkeeping
     generational_stats = []
@@ -103,7 +115,7 @@ def genetic_algorithm(model, population, time_left, probability_crossover, proba
 
         print(f"Gen Count: {gen_count} Max: {max_fitness} Min: {min_fitness} Avg: {avg_fitness}")
 
-        # Take our population of ants and get the top 2 for later
+        # Take our population of ants and get the top 20% for later
         elite1_index, elite2_index = select_max(fitness)
         #print(f"Elite1 {elite1_index, fitness[elite1_index]} Elite2 {elite2_index, fitness[elite2_index]}")
 
@@ -265,6 +277,7 @@ def policy(pos):
     global policy_gene
     global grid_size
     global playbook_size
+    global bounds
     pos = get_approximate_state(pos, bounds)
 
 
@@ -284,28 +297,83 @@ def get_approximate_state(position, bounds):
     Pre: a position in the game, and bounds
     Post: approximation of state 
     """
-    # Unwrap the bounds and position
-    y_1, y_2, x_1, x_2 = bounds
-    yards_to_score, downs_left, distance_to_down, time_left = position
+    global grid_size
+    y_1, y_2, y_3, y_4, x_1, x_2, x_3, x_4= bounds
+    if grid_size == 3: 
+        # Unwrap the bounds and position
+        yards_to_score, downs_left, distance_to_down, time_left = position
 
-    # Set the y box
-    if time_left == 0:
-        y = 0
-    elif yards_to_score/time_left > y_2:
-        y = 2
-    elif yards_to_score/time_left > y_1:
-        y = 1
-    elif yards_to_score/time_left >= 0:
-        y = 0
+        # Set the y box
+        if time_left == 0:
+            y = 0
+        elif yards_to_score/time_left > y_2:
+            y = 2
+        elif yards_to_score/time_left > y_1:
+            y = 1
+        elif yards_to_score/time_left >= 0:
+            y = 0
 
-    # Set the x box
-    if distance_to_down/downs_left > x_2:
-        x = 2
-    elif distance_to_down/downs_left > x_1:
-        x = 1
-    elif distance_to_down/downs_left >= 0:
-        x = 0
+        # Set the x box
+        if distance_to_down/downs_left > x_2:
+            x = 2
+        elif distance_to_down/downs_left > x_1:
+            x = 1
+        elif distance_to_down/downs_left >= 0:
+            x = 0
+    elif grid_size == 4: 
+        # Unwrap the bounds and position
+        yards_to_score, downs_left, distance_to_down, time_left = position
 
+        # Set the y box
+        if time_left == 0:
+            y = 0
+        elif yards_to_score/time_left > y_3:
+            y = 3
+        elif yards_to_score/time_left > y_2:
+            y = 2
+        elif yards_to_score/time_left > y_1:
+            y = 1
+        elif yards_to_score/time_left >= 0:
+            y = 0
+
+        # Set the x box
+        if distance_to_down/downs_left > x_3:
+            x = 3
+        elif distance_to_down/downs_left > x_2:
+            x = 2
+        elif distance_to_down/downs_left > x_1:
+            x = 1
+        elif distance_to_down/downs_left >= 0:
+            x = 0
+    elif grid_size == 5: 
+        # Unwrap the bounds and position
+        yards_to_score, downs_left, distance_to_down, time_left = position
+
+        # Set the y box
+        if time_left == 0:
+            y = 0
+        elif yards_to_score/time_left > y_4:
+            y = 4
+        elif yards_to_score/time_left > y_3:
+            y = 3
+        elif yards_to_score/time_left > y_2:
+            y = 2
+        elif yards_to_score/time_left > y_1:
+            y = 1
+        elif yards_to_score/time_left >= 0:
+            y = 0
+
+        # Set the x box
+        if distance_to_down/downs_left > x_4:
+            x = 4
+        elif distance_to_down/downs_left > x_3:
+            x = 3
+        elif distance_to_down/downs_left > x_2:
+            x = 2
+        elif distance_to_down/downs_left > x_1:
+            x = 1
+        elif distance_to_down/downs_left >= 0:
+            x = 0
     return (y, x)
 
 # Standard argmax function
