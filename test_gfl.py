@@ -28,7 +28,7 @@ game_parameters = [
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        print("USAGE: {python3 | pypy3}", sys.argv[0], "model-number learning-time num-games")
+        print("USAGE: {python3 | pypy3}", sys.argv[0], "model-number learning-time num-ga-fit-test num-games")
         sys.exit(1)
 
     try:
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         fit_n = int(sys.argv[3])
         n = int(sys.argv[4])
     except:
-        print("USAGE: {python3 | pypy3}", sys.argv[0], "model-number learning-time num-games")
+        print("USAGE: {python3 | pypy3}", sys.argv[0], "model-number learning-time num-ga-fit-test num-games")
         sys.exit(1)
 
     model = nfl.NFLStrategy(*game_parameters[game])

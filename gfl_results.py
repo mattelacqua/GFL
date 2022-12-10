@@ -29,7 +29,7 @@ game_parameters = [
 
 if __name__ == "__main__":
     if len(sys.argv) < 5:
-        print("USAGE: {python3 | pypy3}", sys.argv[0], "learning-time num-games num-test num-ga-test")
+        print("USAGE: {python3 | pypy3}", sys.argv[0], "learning-time num-games num-test num-ga-fit-test")
         sys.exit(1)
 
     try:
@@ -38,13 +38,16 @@ if __name__ == "__main__":
         iterations = int(sys.argv[3])
         fit_n = int(sys.argv[4])
     except:
-        print("USAGE: {python3 | pypy3}", sys.argv[0], "learning-time num-games num-test num-ga-test")
+        print("USAGE: {python3 | pypy3}", sys.argv[0], "learning-time num-games num-test num-ga-fit-test")
         sys.exit(1)
 
 
+    # For each model_no 
     for model_no in range(0,2):
+        # For each Grid size
         for grid_size in range(3, 6):
             values = []
+            # For a set number of evaulation tests
             for x in range(0, iterations):
                 model = nfl.NFLStrategy(*game_parameters[model_no])
                 start = time.time();
