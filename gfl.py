@@ -234,7 +234,7 @@ def mutate_population(population, probability_mutation):
         # If we hit the probabilty, mutate
         if random_val < probability_mutation:
 
-            # Get random indeices to mutate
+            # Get random indices to mutate
             rand_add = random.randrange(len(individual))
             rand_sub = random.randrange(len(individual))
 
@@ -309,7 +309,7 @@ def cull_random(population, fitness, n, elites, crossed1, crossed2):
     inverse = list(map(lambda x: max_inverse - x + 1, inverse))
 
     # Cull two random ones weighted towards the bad ones.
-    for gene in range(0,n+2):
+    for individual in range(0,n+2):
         culled = random.choices(population, weights=inverse, k = 1)
         culled = culled[0]
         culled_index = population.index(culled)

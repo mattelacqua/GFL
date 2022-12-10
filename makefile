@@ -13,7 +13,7 @@
 GFL:
 	echo "#!/bin/bash" > GFL
 	echo "pypy3 test_gfl.py \"\$$@\"" >> GFL
-	chmod u+x Mcts
+	chmod u+x GFL
 
 # This test script will run it over each model,
 # grid size, and for a certain number of tests
@@ -22,4 +22,4 @@ GFL:
 GFL_RESULTS:
 	echo "#!/bin/bash" > GFL_RESULTS
 	echo "pypy3 gfl_results.py \"\$$@\"" >> GFL_RESULTS
-	chmod u+x Mcts
+	chmod u+x GFL_RESULTS
