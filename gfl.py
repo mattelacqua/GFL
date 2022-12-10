@@ -48,7 +48,7 @@ visits['x_4, y_4'] = 0
 bad = 0
 
 # Genetic Algorithm
-def ga_learn(model: nfl.NFLStrategy, time_limit, fitness_sims, grid):
+def ga_learn(model: nfl.NFLStrategy, time_limit, fitness_sims, grid=3):
     """ 
     Standard genetic algorithm
     Pre: a nfl strategy model, a time limit, a number of times to simulate fitness of individuals, and grid size
@@ -109,7 +109,7 @@ def ga_learn(model: nfl.NFLStrategy, time_limit, fitness_sims, grid):
     max_fitness, max_fitness_individual, generational_stats, population, final_fitness, final_population = \
         genetic_algorithm(model, initial_population, time_limit, probability_crossover, probability_mutation, generational_stats, fitness_sims, elite_cull_count)
     
-    policy_gene = max_fitness_individual
+    policy_individual = max_fitness_individual
     #print(f"Max Fitness: {max_fitness} Gene: {max_fitness_gene}")
     #print(f"Final Fitnesses: {final_fitness} Avg: {sum(final_fitness)/len(final_fitness)}")
     #print_visits(visits)
@@ -341,7 +341,7 @@ def policy(pos):
 # Approximate state function
 def get_approximate_state(position, bounds):
     """ 
-    Conversion from position to approximate state in a 3x3 grid
+    Conversion from position to approximate state in a nxn grid
     Pre: a position in the game, and bounds
     Post: approximation of state 
     """
